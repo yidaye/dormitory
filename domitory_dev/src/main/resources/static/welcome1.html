@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <!--<link rel="stylesheet" href="./css/font.css">-->
+        <link rel="stylesheet" href="./css/index.css">
+        <link rel="stylesheet" href="./css/iconfont.css">
+        <script src="./lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/index.js"></script>
+         <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+        <script src="./yi/js/index_echart1.js"></script>
+        <script type="text/javascript">
+        window.onload=function () {
+        var bantol;//楼栋数
+        var mantol;//宿管人数
+        var user=JSON.parse(sessionStorage.getItem('user'));
+        $('#a_name').html(user.a_no);
+        //console.log(user);
+        //console.log(user.a_no);
+        //console.log(user.a_pass);
+         $.ajax({
+	       url:"ban/findtol",
+	       data:{},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       $('#bantol').html(data+'栋');
+	       }
+	       
+	    })
+	    
+	    
+	        $.ajax({
+	       url:"dorbed/findpepo",
+	       data:{},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       
+	       $('#findpepo').html(data+'人');
+	       }
+	    })
+	    
+	     $.ajax({
+	       url:"dorbed/findkong",
+	       data:{},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       $('#findkong').html(data+'间');
+	       }
+	    })
+	    $.ajax({
+	       url:"dorbed/findwei",
+	       data:{},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       $('#findwei').html(data+'人');
+	       }
+	    })
+	    
+	    
+	      $.ajax({
+	       url:"pubinfo/findAll",
+	       data:{},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       
+	       $('#pubtime').html(data[0].date);
+	       $('#pubinfo').html(data[0].content);
+	       }
+	    })
+	     $.ajax({
+	       url:"manager/findtol",
+	       data:{},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       $('#mantol').html(data+'人');
+	       }
+	       
+	    })
+	    
+	     $.ajax({
+	       url:"ban/findAll",
+	       data:{},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	            
+	            var ban_name = [];
+	            var ban_pepole =[];
+	            var ban_relpepo = [];
+	            var ban_kpepo = [];
+                   
+                        for(var i=0;i<data.length;i++){
+                            console.log(data[i])
+                            ban_name[i]=data[i].b_no+'栋'; 
+                            ban_pepole[i] =data[i].b_pepole;
+                            ban_relpepo[i]=data[i].b_relpepo;
+                            ban_kpepo[i]=data[i].b_pepole-data[i].b_relpepo;
+	                                          }
+	       chart1(ban_name,ban_pepole,ban_relpepo,ban_kpepo)
+	       }
+	       
+	    })
+	    
+	     $.ajax({
+	       url:"ban/findpepo",
+	       data:{},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	            
+	           console.log(data)
+	           chart2(data)
+	       }
+	       
+	    })
+	    
+	    
+ function chart1(ban_name,ban_pepole,ban_relpepo,ban_kpepo){   
+         var dom = document.getElementById("mychart");
+var myChart = echarts.init(dom);
+var app = {};
+
+var option;
+option= {title: {
+       left: 'center',
+       text: '楼栋入住情况'
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+    padding:[30,50,0,0],
+        data: ['入住人数', '空余床位','楼栋人数']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        data: ban_name
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [ 
+      
+       
+
+        {
+            name: '入住人数',
+            type: 'line',
+            
+            
+             data: ban_relpepo
+        }, 
+         {
+            name: '空余床位',
+            type: 'line',
+            
+           data:ban_kpepo
+        },
+        {
+            name: '楼栋人数',
+            type: 'line',
+            
+            data: ban_pepole
+        }
+        ]
+};
+
+if (option && typeof option === 'object') {
+    myChart.setOption(option);
+}
+}
+
+ function chart2(data){      
+var dom = document.getElementById("mychart1");
+var myChart = echarts.init(dom);
+var app = {};
+
+var option;
+option = {
+    title: {
+        text: '寝室类别比例情况',
+        subtext: '',
+        left: 'center'
+    },
+    tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c}人 ({d}%)'
+    },
+     toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    legend: {
+        bottom: 10,
+        left: 'center',
+        data: []
+    },
+    series: [
+        {
+            type: 'pie',
+            radius: '63%',
+            center: ['50%', '50%'],
+            selectedMode: 'single',
+            data: data,
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+
+if (option && typeof option === 'object') {
+    myChart.setOption(option);
+}
+
+}
+
+        }
+        
+          
+        </script>
+        <style>
+            #FontScroll{
+                width: 100%;
+                height: 245px;
+                overflow: hidden;
+            }
+            #FontScroll ul li{
+                height: 32px;
+                width: 100%;
+                color: #ffffff;
+                line-height: 32px;
+                overflow: hidden;
+                font-size: 14px;
+            }
+            #FontScroll ul li i{
+                color: red;
+            }
+            .layui-table td, .layui-table th{
+                min-width: auto !important;
+            }
+        </style>
+    </head>
+    <body>
+    
+    <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="">首页</a>
+          </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+</div>
+    
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body ">
+                            <blockquote class="layui-elem-quote">欢迎管理员：
+                                <span class="x-red" id ="a_name"> </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                日期：
+                                <span id="time" style="margin-right:10px;"></span>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <div class="layui-col-md12" >
+                    <div class="layui-card">
+                        <div class="layui-card-header" >数据统计</div>
+                        <div class="layui-card-body ">
+                            <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                <li class="layui-col-md2 layui-col-xs6">
+                                    <a href="javascript:;" class="x-admin-backlog-body">
+                                        <h3>宿舍楼栋数</h3>
+                                        <p >
+                                            <cite id="bantol"></cite>
+                                        </p>
+                                    </a>
+                                </li>
+
+                                 <li class="layui-col-md2 layui-col-xs6">
+                                    <a href="javascript:;" class="x-admin-backlog-body">
+                                        <h3>宿管人数</h3>
+                                        <p>
+                                            <cite id="mantol"></cite></p>
+                                    </a>
+                                </li>
+                                <li class="layui-col-md2 layui-col-xs6">
+                                    <a href="javascript:;" class="x-admin-backlog-body">
+                                        <h3>宿舍入住人数</h3>
+                                        <p>
+                                            <cite id="findpepo"></cite></p>
+                                    </a>
+                                </li>
+                                <li class="layui-col-md2 layui-col-xs6">
+                                    <a href="javascript:;" class="x-admin-backlog-body">
+                                        <h3>宿舍空余床位人数</h3>
+                                        <p>
+                                            <cite id="findkong"></cite></p>
+                                    </a>
+                                </li>
+                                 <li class="layui-col-md2 layui-col-xs6">
+                                    <a href="javascript:;" class="x-admin-backlog-body">
+                                        <h3>待分配人数</h3>
+                                        <p>
+                                            <cite id="findwei"></cite></p>
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm6 layui-col-md4">
+                    <div class="layui-card">
+                        <div class="layui-card-header">数据统计
+
+                        </div>
+                        <div class="layui-card-body ">
+                            <div id="mychart" style="width: 100%;height: 245px;"></div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="layui-col-sm6 layui-col-md4">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+
+                        </div>
+                        <div class="layui-card-body ">
+                            <div id="mychart1" style="width: 100%;height: 245px;"></div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="layui-col-sm6 layui-col-md4">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+
+                        </div>
+                        <div class="layui-card-body ">
+                            <div class="layui-elem-quote" style="height:210px;">
+                                发布日期：<cite id="pubtime"></cite><br>  
+                                内容：<cite id="pubinfo"></cite>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                
+               
+
+                
+
+               
+
+            </div>
+        </div>
+        </div>
+    </body>
+
+    <script src="./js/echarts.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.myscroll').myScroll({
+                speed: 60, //数值越大，速度越慢
+                rowHeight: 38 //li的高度
+            });
+
+        });
+
+
+        function getTime(){
+            var myDate = new Date();
+            var myYear = myDate.getFullYear(); //获取完整的年份(4位,1970-????)
+            var myMonth = myDate.getMonth()+1; //获取当前月份(0-11,0代表1月)
+            var myToday = myDate.getDate(); //获取当前日(1-31)
+            var myDay = myDate.getDay(); //获取当前星期X(0-6,0代表星期天)
+            var myHour = myDate.getHours(); //获取当前小时数(0-23)
+            var myMinute = myDate.getMinutes(); //获取当前分钟数(0-59)
+            var mySecond = myDate.getSeconds(); //获取当前秒数(0-59)
+            var week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+            var nowTime;
+
+            nowTime = myYear+'-'+fillZero(myMonth)+'-'+fillZero(myToday)+'&nbsp;&nbsp;'+fillZero(myHour)+':'+fillZero(myMinute)+':'+fillZero(mySecond)+'&nbsp;&nbsp;'+week[myDay]+'&nbsp;&nbsp;';
+            //console.log(nowTime);
+            $('#time').html(nowTime);
+
+        };
+        function fillZero(str){
+            var realNum;
+            if(str<10){
+                realNum	= '0'+str;
+            }else{
+                realNum	= str;
+            }
+            return realNum;
+        }
+        setInterval(getTime,1000);
+    </script>
+
+</html>

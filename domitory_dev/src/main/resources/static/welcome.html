@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <!--<link rel="stylesheet" href="./css/font.css">-->
+        <link rel="stylesheet" href="./css/index.css">
+        <link rel="stylesheet" href="./css/iconfont.css">
+        <script src="./lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="./js/index.js"></script>
+        <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+        <script src="./yi/js/index_echart.js"></script>
+        <script src="/js/fontscroll.js"></script>
+        <style>
+            #FontScroll{
+                width: 100%;
+                height: 245px;
+                overflow: hidden;
+            }
+            #FontScroll ul li{
+                height: 32px;
+                width: 100%;
+                color: #ffffff;
+                line-height: 32px;
+                overflow: hidden;
+                font-size: 14px;
+            }
+            #FontScroll ul li i{
+                color: red;
+            }
+            .layui-table td, .layui-table th{
+                min-width: auto !important;
+            }
+        </style>
+    </head>
+    <body>
+    
+    <div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="">首页</a>
+          </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+</div>
+    
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md6" >
+                    <div class="layui-card">
+                        <div class="layui-card-header" >公告信息</div>
+                        <div class="layui-card-body ">
+                            <div class="layui-elem-quote" style="height:100px;" >
+                           
+                                发布日期：<cite id="pubtime"></cite><br>  
+                                内容：<cite id="pubinfo"></cite>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+
+                <div class="layui-col-md6" >
+                    <div class="layui-card">
+                        <div class="layui-card-header" >统计信息</div>
+                        <div class="layui-card-body ">
+                            <div style="height:140px;">
+                               
+                     
+      <div class="layui-col-md3" >
+          <div class="layui-panel">
+            <div style="  line-height:40px;background-color: #f2f2f2; height:130px; text-align:center;" >
+              
+              
+              <a href="javascript:;" class="x-admin-backlog-body">
+                                        <h3>待维修宿舍</h3>
+                                        <p>
+                                            <cite id="dorrepair"></cite></p>
+                                    </a>   
+                                                
+        </div>
+      </div>   
+    </div>
+
+       <div class="layui-col-md3" style="margin-left:20px;">
+          <div class="layui-panel">
+            <div style="  line-height:40px;background-color: #f2f2f2; height:130px; text-align:center;" >
+              
+                                    <a href="javascript:;" class="x-admin-backlog-body">
+                                        <h3>系统反馈信息</h3>
+                                        <p>
+                                            <cite id="banrelpepo"></cite></p>
+                                    </a>               
+        </div>
+      </div>   
+    </div>
+
+    <div class="layui-col-md3" style="margin-left:20px;">
+          <div class="layui-panel">
+            <div style="  line-height:40px;background-color: #f2f2f2; height:130px; text-align:center;" >
+              
+                                    <a href="javascript:;" class="x-admin-backlog-body">
+                                        <h3>今日缺寝人数</h3>
+                                        <p>
+                                            <cite id="wantinfo"></cite></p>
+                                    </a>               
+        </div>
+      </div>   
+    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+               
+                
+                <div class="layui-col-sm6 layui-col-md4">
+                    <div class="layui-card">
+                        <div class="layui-card-header">数据统计
+
+                        </div>
+                        <div class="layui-card-body ">
+                            <div id="mychart" style="width: 100%;height: 245px;"></div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="layui-col-sm6 layui-col-md4">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+
+                        </div>
+                        <div class="layui-card-body ">
+                            <div id="mychart1" style="width: 100%;height: 245px;"></div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="layui-col-sm6 layui-col-md4">
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+
+                        </div>
+                        <div class="layui-card-body ">
+                            <div id="mychart2" style="width: 100%;height: 245px;"></div>
+                        </div>
+                    </div>
+                </div>
+               
+
+                
+
+               
+
+            </div>
+        </div>
+        </div>
+    </body>
+
+    <script src="./js/echarts.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.myscroll').myScroll({
+                speed: 60, //数值越大，速度越慢
+                rowHeight: 38 //li的高度
+            });
+
+        });
+
+
+      
+    </script>
+    <script src="js/fontscroll.js"></script>
+
+    <script type="text/javascript">
+        
+         window.onload=function () {
+       
+         var manager=JSON.parse(sessionStorage.getItem('manager'));
+        console.log(manager);
+        
+         
+	    $.ajax({
+	       url:"pubinfo/findAll",
+	       data:{},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       
+	       $('#pubtime').html(data[0].date);
+	       $('#pubinfo').html(data[0].content);
+	       }
+	    })
+	    
+	     $.ajax({
+	       url:"dorremark/findtol",
+	       data:{b_no:manager.b_no},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       //console.log(data)
+	        $('#banrelpepo').html(data+'条');
+	       }
+	    })
+	    
+	     $.ajax({
+	       url:"wantinfo/findcount",
+	       data:{m_no:manager.m_no},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	        $('#wantinfo').html(data+'人');
+	       }
+	    })
+	    
+	     $.ajax({
+	       url:"dorrepair/findAll",
+	       data:{b_no:manager.b_no},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	        $('#dorrepair').html(data.length+'间');
+	       }
+	    })
+	    
+	    $.ajax({
+	       url:"User/findcoll",
+	       data:{b_no:manager.b_no},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	        //console.log(data)
+	         chart1(data)
+	       }
+	    })
+	    
+	    $.ajax({
+	       url:"ban/echart",
+	       data:{b_no:manager.b_no},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	        //console.log(data)
+	         chart3(data)
+	       }
+	    })
+	    
+	    $.ajax({
+	       url:"dorrepair/findtoday",
+	       data:{b_no:manager.b_no},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	        //console.log(data)
+	        var datas1=data.ok
+	        var datas2=data.err
+	        chart2(datas1,datas2)
+	       }
+	    })
+        }
+  function chart1(data){      
+var dom = document.getElementById("mychart");
+var myChart = echarts.init(dom);
+var app = {};
+
+var option;
+option = {
+    title: {
+        text: '学院人数统计',
+        subtext: '',
+        left: 'center'
+    },
+    tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c}人 ({d}%)'
+    },
+     toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    legend: {
+        bottom: 10,
+        left: 'center',
+        data: []
+    },
+    series: [
+        {
+            type: 'pie',
+            radius: '63%',
+            center: ['50%', '50%'],
+            selectedMode: 'single',
+            data: data,
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+
+if (option && typeof option === 'object') {
+    myChart.setOption(option);
+}
+
+}
+
+
+function chart2(datas1,datas2) {
+var dom1 = document.getElementById("mychart1");
+var myChart1 = echarts.init(dom1);
+var app1 = {};
+
+var datelist =[];
+for(var i=0;i<7;i++)
+{
+var nowDate = new Date();
+ var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1; 
+ if((nowDate.getDate()-i) < 10)
+ {
+ var day ="0" + (nowDate.getDate()-i)
+ }else{var day = (nowDate.getDate()-i)}
+ var dateStr =  month + "-" + day;
+ datelist.push(dateStr);
+}
+console.log(datelist)
+
+
+var datalist1 =[0,0,0,0,1,0,0];
+
+var option1;
+option1 = {
+    title: {
+        left: 'center',
+        text: '一周内维修情况',
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    legend: {
+    padding:[30,50,0,0],
+        data: ['待维修宿舍', '已维修宿舍']
+    },
+     toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis: {
+        type: 'value',
+        boundaryGap: [0, 0.01]
+    },
+    yAxis: {
+        type: 'category',
+         data: datelist
+    },
+    series: [
+        {
+            name: '待维修宿舍',
+            type: 'bar',
+            data: datas2
+        },
+        {
+            name: '已维修宿舍',
+            type: 'bar',
+            data: datas1
+        }
+    ]
+};
+if (option1 && typeof option1 === 'object') {
+    myChart1.setOption(option1);
+}
+
+}
+
+
+  function chart3(data){      
+var dom2 = document.getElementById("mychart2");
+var myChart2 = echarts.init(dom2);
+var app2 = {};
+
+var option2;
+option2 = {
+    title: {
+        text: '入住情况',
+        subtext: '',
+        left: 'center'
+    },
+    tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c}人 ({d}%)'
+    },
+     toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    legend: {
+        bottom: 10,
+        left: 'center',
+        data: []
+    },
+    series: [
+        {
+            type: 'pie',
+            radius: '63%',
+            center: ['50%', '50%'],
+            selectedMode: 'single',
+            data: data,
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+
+if (option2 && typeof option2 === 'object') {
+    myChart2.setOption(option2);
+}
+
+}
+
+
+
+    </script>
+</html>

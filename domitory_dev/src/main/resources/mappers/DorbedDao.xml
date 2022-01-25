@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.DorbedDao">
+ 
+
+ 
+  <!-- 根据条件查询 -->
+ <select id="find"  resultType="Dorbed">
+ select * from t_dor_bed where b_no=#{b_no} and d_no=#{d_no}
+ </select> 
+ 
+   <!-- 根据条件查询 -->
+ <select id="findAll"  resultType="Dorbed">
+SELECT db.*,u.u_name,u.u_phone FROM t_dor_bed db,t_user u  WHERE db.u_no IS NOT NULL AND db.u_no=u.u_no  
+<if test="b_no !=null and b_no !='' ">
+   and db.b_no=#{b_no}
+</if>
+<if test="d_no !=null and d_no !='' ">
+   and db.d_no=#{d_no}
+</if>
+limit #{pag},#{limt}
+ </select> 
+ 
+ <select id="findk" resultType="int">
+ SELECT  id FROM t_dor_bed WHERE b_no=#{b_no} AND d_no=#{d_no} AND u_no IS NULL
+ </select>
+ 
+ 
+ 
+ 
+ 
+   <!-- 根据条件查询 -->
+ <select id="findAlltol"  resultType="int">
+SELECT count(1) FROM t_dor_bed db,t_user u  WHERE db.u_no IS NOT NULL AND db.u_no=u.u_no  
+<if test="b_no !=null and b_no !='' ">
+   and db.b_no=#{b_no}
+</if>
+<if test="d_no !=null and d_no !='' ">
+   and db.d_no=#{d_no}
+</if>
+ </select> 
+ 
+   <!-- 查询空置床位 -->
+ <select id="findkbed"  resultType="int">
+SELECT db.id FROM t_dormitory d,t_ban b,t_dor_bed db 
+WHERE d.b_no=b.b_no AND d.b_no=db.b_no AND d.d_no=db.d_no AND db.u_no IS NULL AND b.b_sex=#{b_sex}
+ </select>
+ 
+    <!-- 查询未分配人 -->
+ <select id="findkpepo"  resultType="String">
+SELECT u_no FROM t_user WHERE u_no  NOT IN (SELECT db.u_no FROM t_user u,t_dor_bed db WHERE u.u_no = db.u_no) AND u_sex=#{u_sex}
+ </select>
+ 
+     <!-- 分配 -->
+<update id="update" >
+UPDATE t_dor_bed SET u_no=#{u_no} WHERE id=#{id}
+</update>
+ 
+   <!-- 查询入住人数 -->
+ <select id="findpepo"  resultType="int">
+ select count(1) from t_dor_bed where u_no is not null 
+ <if test="b_no != null and b_no !=''">
+        and  b_no=#{b_no}
+  </if>
+ 
+ </select> 
+  
+  <!-- 查询空余位置 -->
+ <select id="findkong"  resultType="int">
+ select count(1) from t_dor_bed where u_no is  null 
+ <if test="b_no != null and b_no !=''">
+        and  b_no=#{b_no}
+  </if>
+ </select> 
+
+  <!-- 查询未分配宿舍人数 -->
+ <select id="findwei"  resultType="int">
+ SELECT x.pepo-y.pepo AS resu FROM  (SELECT COUNT(1) AS pepo FROM t_user) AS X,
+      (SELECT COUNT(1) AS pepo FROM t_user u,t_dor_bed db WHERE u.u_no = db.u_no) AS Y
+ </select> 
+ 
+<!-- 删除 -->
+<update id="delete">
+delete from t_dor_bed where b_no=#{b_no} 
+</update>
+  
+  <!-- 删除 -->
+<update id="delepepo">
+delete from t_user where u_no=#{u_no} 
+</update>
+  
+  <!-- 添加 -->
+<update id="add" parameterType="Dorbed">
+insert into t_dor_bed(d_no,b_no,bed_no) values(#{d_no},#{b_no},#{bed_no})
+</update>
+  
+    <!-- 修改 -->
+<update id="updtuno" >
+UPDATE t_dor_bed SET u_no=NULL WHERE u_no=#{u_no}
+</update>
+  
+  
+  
+ </mapper>

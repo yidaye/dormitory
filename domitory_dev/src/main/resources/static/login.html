@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" />
+<title>登录</title>
+<link rel="stylesheet" type="text/css" href="/css/login/index.css" />
+<script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
+</head>
+<style type="text/css">
+	 body {
+            background-image: url("/img/login/bg-login.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            min-height: 100vh;
+            background-size: 100% 100%;
+        }
+
+         body:before {
+            content: "";
+            background-color: rgba(0, 0, 0, .2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+</style>
+<body>
+
+
+
+<div class="table">
+	
+	<div class="user">
+	<div class="wel">宿舍管理系统</div>
+		<div id="yonghu" style=""><img src="/img/login/yhm.png" /></div>
+		<input type="text" name="username" id="username" placeholder="请输入登录账号" />
+	</div>			
+	<div class="password">
+		<div id="yonghu"><img src="/img/login/mm.png" /></div>
+		<input type="password" name="password" id="password" placeholder="请输入登录密码"/>
+	</div>
+	
+	<input class="btn" type="button" name="登录" value="登录"  onclick="testjson()"/>
+</div>
+
+</body>
+<script type="text/javascript">
+ function testjson()
+	  {
+	    var pname=$("#username").val();
+	    var password=$("#password").val();
+	    if (pname == 'admin'){
+	    $.ajax({
+	       url:"admin/login",
+	       //type:"post",
+	       data:{a_no:pname,a_pass:password},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	        console.log(data);
+	        location.href='index1';
+	        sessionStorage.setItem('user',JSON.stringify(data));
+	       }
+	       
+	    })
+	    }else{
+	     $.ajax({
+	       url:"manager/login",
+	       //type:"post",
+	       data:{m_no:pname,m_pass:password},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	        console.log(data);
+	        location.href='index';
+	        sessionStorage.setItem('manager',JSON.stringify(data));
+	       }
+	       
+	    })
+	    }
+	    
+	  }
+</script>
+</html>

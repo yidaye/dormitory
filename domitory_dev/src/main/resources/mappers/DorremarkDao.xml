@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.DorremarkDao">
+ 
+ <insert id="add" parameterType="Dorremark">
+ insert into t_dor_remark(u_no,b_no,type,remark,date,imgurl) values(#{u_no},#{b_no},#{type},#{remark},#{date},#{imgurl})
+ </insert>
+ 
+ <delete id="delete" parameterType="int">
+ delete from t_dor_remark where id=#{id}
+ </delete>
+ 
+ <select id="find" resultType="Dorremark">
+ select r.*,u.u_name  from t_dor_remark r,t_user u where r.u_no=u.u_no and r.b_no=#{b_no}
+ <if test="date != null and date !=''">
+    and date=#{date}
+ </if>
+  limit  #{pag},#{limt}
+ </select>
+ 
+  <select id="findtol" resultType="int">
+ select count(1)  from t_dor_remark r,t_user u where r.u_no=u.u_no and r.b_no=#{b_no}
+ <if test="date != null and date !=''">
+    and date=#{date}
+ </if>
+ </select>
+ 
+ </mapper>

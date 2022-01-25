@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.DorcleanDao">
+ 
+  <!-- 根据楼栋号 -->
+ <select id="findAll"  resultType="Dorclean">
+ select * from t_dor_clean where b_no=#{b_no}
+ </select> 
+ 
+<!-- 根据宿舍号查询 -->
+ <select id="findbydno"  resultType="Dorclean">
+   select * from t_dor_clean where b_no=#{b_no} and d_no=#{d_no}
+   ORDER BY id DESC
+ </select> 
+  
+  <!-- 查询未评估宿舍 -->
+ <select id="findnocl"  resultType="String">
+
+   SELECT d_no FROM t_dormitory WHERE b_no=#{b_no} AND   
+          d_no NOT IN(SELECT d.d_no FROM t_dor_clean c,t_dormitory d WHERE c.d_no=d.d_no AND c.b_no=d.b_no 
+                AND d.b_no=#{b_no}  AND date=#{date})
+   
+ </select>
+  
+  
+    <!-- 添加 -->
+ <insert id="add"  parameterType="Dorclean">
+   insert into t_dor_clean (date,remark,d_no,b_no,sisuation) values(#{date},#{remark},#{d_no},#{b_no},#{sisuation})
+ </insert> 
+  
+  <!-- 根据条件查询 -->
+  <select id="find" resultType="Dorclean">
+  select * from t_dor_clean where b_no=#{b_no}
+  
+  <if test="date != null and date !=''">
+        and  date=#{date}
+     </if>
+     <if test="d_no != null and d_no!='' ">
+        and  d_no=#{d_no}
+     </if>
+ 
+ limit #{pag},#{limt}
+  </select>
+  
+    <!-- 根据条件查询 数量-->
+  <select id="findtol" resultType="int">
+  select count(1) from t_dor_clean where b_no=#{b_no}
+  
+     <if test="date != null and date !=''">
+        and  date=#{date}
+     </if>
+     <if test="d_no != null and d_no!='' ">
+        and  d_no=#{d_no}
+     </if>
+     
+  </select>
+  
+  <!-- 删除 -->
+  <update id="delete">
+  delete from t_dor_clean where id=#{id}
+  </update>
+  
+    <!-- 修改 -->
+  <update id="update">
+  update t_dor_clean set remark=#{remark},sisuation=#{sisuation} where id=#{id}
+  </update>
+ </mapper>

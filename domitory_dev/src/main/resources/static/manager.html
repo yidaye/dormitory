@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>文章类型列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./yi/layui/css/layui.css"  media="all">
+    <script src="./yi/js/jquery-1.11.3.min.js"></script>
+    <script src="./yi/layer/layer.js"></script>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/index.js"></script>
+ <script type="text/javascript">
+        window.onload=function () {
+        var user=JSON.parse(sessionStorage.getItem('user'));
+        console.log(user);
+        }
+     </script>
+</head>
+<body>
+<div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">宿管员管理</a>
+            <a>
+              <cite>宿管员信息</cite></a>
+          </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+</div>
+<div class="layui-card-body ">
+                        宿管账号：
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" id="m_no"  placeholder="请输入宿管账号" autocomplete="off" class="layui-input">
+                        </div>
+                        姓名：
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" id="m_name"  placeholder="请输入姓名" autocomplete="off" class="layui-input">
+                        </div>
+                        管理楼栋号：
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" id="b_no"  placeholder="请输入楼栋号" autocomplete="off" class="layui-input">
+                        </div>
+                        
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn"  id="select" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                   
+            
+</div>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+</body>
+<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">
+
+    <button class="layui-btn layui-btn-sm" lay-event="getCheckData">批量删除</button>
+    <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="getCheckLength" >+添加信息</button>
+  </div>
+</script>
+ 
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="updt" >修改信息</a>
+  <a class="layui-btn layui-btn-xs" lay-event="edit" >重置密码</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+$('#select').click(function(){
+var s_m_no =$('#m_no').val()
+var s_m_name=$('#m_name').val()
+var s_b_no=$('#b_no').val()
+console.log(s_m_no)
+console.log(s_m_name)
+console.log(s_b_no)
+
+layui.use('table', function(){
+  var table = layui.table;
+
+  table.render({
+    elem: '#test'
+    ,url:'manager/findAll'
+    ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+    ,defaultToolbar: ['filter', 'exports']
+    ,title: '宿管人员信息表'
+    ,where:{m_no:s_m_no,m_name:s_m_name,b_no:s_b_no}
+    ,cols: [[
+          {type: 'checkbox', fixed: 'left'}
+      ,{field:'m_id', title:'ID', width:100, fixed: 'left', unresize: true, sort: true}
+      ,{field:'m_no', title:'账号', width:150, edit: 'text'}
+      ,{field:'m_name', title:'姓名', width:150, edit: 'text'}
+      ,{field:'m_sex', title:'性别', width:100, edit: 'text'}
+      ,{field:'m_phone', title:'联系电话', width:200}
+      ,{field:'b_no', title:'管理楼栋',width:100}
+      ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:300}
+    ]]
+    ,id: 'testReload'
+    ,page: {				//分页设置
+					limit:5,		//默认每一页显示数量
+					limits:[5,10,20,30,40,50]		//可选择每页显示的数量
+				}
+  });
+  
+    //头工具栏事件
+  table.on('toolbar(test)', function(obj){
+    var checkStatus = table.checkStatus(obj.config.id);
+    switch(obj.event){
+      case 'getCheckData':
+      var data = checkStatus.data;
+        layer.confirm('确认删除', function(index){
+        for(var i=0;i<data.length;i++)
+        {
+           $.ajax({
+	       url:"manager/delete",
+	       //type:"post",
+	       data:{m_id:data[i].m_id},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       layer.close(index);
+	       table.reload('testReload', {
+           page: {
+            curr: 1 //重新从第 1 页开始
+                 }
+        
+              });
+	        console.log(data);
+	       }
+	       
+	    })
+        }
+       })
+      break;
+      case 'getCheckLength':
+        layer.open({
+        //formType: 2,//这里依然指定类型是多行文本框，但是在下面content中也可绑定多行文本框
+         title: '添加宿管员信息',
+         area: ['500px', '400px'],
+         btnAlign: 'c',
+         closeBtn:'1',//右上角的关闭
+        content: '<form class="layui-form layui-form-pane" action="">'
+         +'<div class="layui-form-item" style="display:none"><label class="layui-form-label">用户id</label><div class="layui-input-block"><input type="text" id="m_id" autocomplete="off"  class="layui-input"></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>账号</label><div class="layui-input-block"><input type="text" id="s_m_no" autocomplete="off"  class="layui-input" ></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>姓名</label><div class="layui-input-block"><input type="text" id="s_m_name" autocomplete="off"  class="layui-input" ></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>性别</label><div class="layui-input-block"><input type="text" id="s_m_sex" autocomplete="off"  class="layui-input" ></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>联系电话</label><div class="layui-input-block"><input type="text" id="s_m_phone" autocomplete="off"  class="layui-input" ></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label">管理楼栋</label><div class="layui-input-block"><input type="text" id="s_b_no" autocomplete="off"  class="layui-input" ></div></div>'
+         +'</from>',
+         btn:['确认添加','取消'],
+         yes: function (index, layero) {
+          var value_m_id = $('#m_id').val();//获取多行文本框的值
+          var value_m_no = $('#s_m_no').val();
+          var value_m_name = $('#s_m_name').val();
+          var value_m_sex = $('#s_m_sex').val();
+          var value_m_phone = $('#s_m_phone').val();
+          var value_b_no = $('#s_b_no').val();
+          var value_m_pass = '123456'; 
+          
+         $.ajax({
+	       url:"manager/add",
+	       //type:"post",
+	       data:{m_no:value_m_no,m_name:value_m_name,m_sex:value_m_sex,
+	              m_phone:value_m_phone,b_no:value_b_no,m_pass:value_m_pass},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       table.reload('testReload', {
+           page: {
+            curr: 1 //重新从第 1 页开始
+                 }
+        
+              });
+	        console.log(data);
+	       }
+	       
+	    })
+          layer.close(index);
+
+
+    },})
+      
+      break;
+      case 'isAll':
+        layer.msg(checkStatus.isAll ? '全选': '未全选');
+      break;
+      
+      //自定义头工具栏右侧图标 - 提示
+      case 'LAYTABLE_TIPS':
+        layer.alert('这是工具栏右侧自定义的一个图标按钮');
+      break;
+    };
+  });
+  
+  //监听行工具事件
+  table.on('tool(test)', function(obj){
+    var data = obj.data;
+    console.log(obj)
+    if(obj.event === 'updt'){
+    
+      layer.open({
+//formType: 2,//这里依然指定类型是多行文本框，但是在下面content中也可绑定多行文本框
+title: '修改信息',
+area: ['500px', '400px'],
+btnAlign: 'c',
+closeBtn:'1',//右上角的关闭
+content: '<form class="layui-form layui-form-pane" action="">'
+         +'<div class="layui-form-item" style="display:none"><label class="layui-form-label">用户id</label><div class="layui-input-block"><input type="text" id="m_id" autocomplete="off"  class="layui-input"></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>账号</label><div class="layui-input-block"><input  type="text" id="up_m_no" autocomplete="off"  class="layui-input" value='+data.m_no+'></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>姓名</label><div class="layui-input-block"><input type="text" id="up_m_name" autocomplete="off"  class="layui-input" value='+data.m_name+'></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>性别</label><div class="layui-input-block"><input type="text" id="up_m_sex" autocomplete="off"  class="layui-input" value='+data.m_sex+'></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>联系电话</label><div class="layui-input-block"><input type="text" id="up_m_phone" autocomplete="off"  class="layui-input" value='+data.m_phone+'></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>管理楼栋</label><div class="layui-input-block"><input type="text" id="up_b_no" autocomplete="off"  class="layui-input" value='+data.b_no+'></div></div>'
+         +'</from>',
+btn:['确认修改','取消'],
+yes: function (index, layero) {
+          //var up_m_id = $('#m_id').val();//获取多行文本框的值
+          var up_m_id = data.m_id;
+          var up_m_no = $('#up_m_no').val();
+          var up_m_name = $('#up_m_name').val();
+          var up_m_sex = $('#up_m_sex').val();
+          var up_m_phone = $('#up_m_phone').val();
+          var up_b_no = $('#up_b_no').val();
+  layer.close(index);
+
+$.ajax({
+	       url:"manager/update",
+	       //type:"post",
+	       data:{ m_id:up_m_id,m_no:up_m_no,m_sex:up_m_sex,m_phone:up_m_phone,m_name:up_m_name,b_no:up_b_no},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	        console.log(data);
+	       }
+	       
+	    })
+
+obj.update({
+          m_id: up_m_id,
+          m_no: up_m_no,
+          m_sex: up_m_sex,
+          m_name: up_m_name,
+          m_phone: up_m_phone,
+          b_no: up_b_no,
+        });
+
+    },})
+    
+    
+    }
+    else if(obj.event === 'del'){
+      layer.confirm('确认删除', function(index){
+         var id=obj.data.m_id;
+         $.ajax({
+	       url:"manager/delete",
+	       //type:"post",
+	       data:{m_id:id},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       obj.del();
+            layer.close(index);
+	        console.log(data);
+	       }
+	       
+	    })
+	    
+      });
+     
+    } else if(obj.event === 'edit'){
+    
+    
+   layer.open({
+//formType: 2,//这里依然指定类型是多行文本框，但是在下面content中也可绑定多行文本框
+title: '重置宿管员密码',
+area: ['500px', '200px'],
+btnAlign: 'c',
+closeBtn:'1',//右上角的关闭
+content: '<form class="layui-form layui-form-pane" action="">'
+         +'<div class="layui-form-item" style="display:none"><label class="layui-form-label">用户id</label><div class="layui-input-block"><input type="text" id="m_id" autocomplete="off"  class="layui-input" value='+data.m_id+'></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>新密码</label><div class="layui-input-block"><input type="password" id="m_pass" autocomplete="off"  class="layui-input" ></div></div>'
+         +'<div class="layui-form-item"><label class="layui-form-label"><span class="x-red">*</span>确认新密码</label><div class="layui-input-block"><input type="password" id="u_name" autocomplete="off"  class="layui-input" ></div></div>'
+         +'</from>',
+btn:['确认修改','取消'],
+yes: function (index, layero) {
+          var value_m_id = $('#m_id').val();//获取多行文本框的值
+          var value_m_pass = $('#m_pass').val();
+  
+  layer.close(index);
+
+$.ajax({
+	       url:"manager/updapass",
+	       //type:"post",
+	       data:{ m_id:value_m_id,m_pass:value_m_pass},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	        console.log(data);
+	       }
+	       
+	    })
+
+
+    },})
+    
+    }
+    
+  });
+});
+
+})
+</script>
+</html>

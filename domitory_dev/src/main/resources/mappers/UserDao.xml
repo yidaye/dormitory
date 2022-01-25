@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.UserDao">
+ 
+  <!-- 查询宿舍学院分布 -->
+ <select id="findcoll" resultType="User">
+    SELECT COUNT(1) AS u_id,u_coll FROM  t_user u , t_dor_bed b WHERE u.u_no = b.u_no AND b.b_no=#{b_no}
+    GROUP BY u_coll
+ 
+ </select>
+ 
+ 
+ <!-- 查询所有用户信息 -->
+ <select id="findAll" resultType="User">
+ SELECT t.*,d.bed_no,d.d_no FROM t_dor_bed d,t_user t  WHERE d.u_no = t.u_no and  b_no=#{b_no}
+  <if test="u_no != null and u_no !=''">
+        and  t.u_no=#{u_no}
+     </if>
+     <if test="u_name != null and u_name !='' ">
+        and  u_name=#{u_name}
+     </if>
+     <if test="u_gra != null and u_gra!='' ">
+        and  u_gra=#{u_gra}
+     </if>
+      limit #{pag},#{limt}
+ 
+ </select> 
+ 
+  <!-- 查询所有用户信息 -->
+ <select id="findAlltol" resultType="int">
+ SELECT count(1) FROM t_dor_bed d,t_user t  WHERE d.u_no = t.u_no and  b_no=#{b_no}
+  <if test="u_no != null and u_no !=''">
+        and  t.u_no=#{u_no}
+     </if>
+     <if test="u_name != null and u_name !='' ">
+        and  u_name=#{u_name}
+     </if>
+     <if test="u_gra != null and u_gra!='' ">
+        and  u_gra=#{u_gra}
+     </if>
+ </select> 
+ 
+
+ 
+  <!-- 条件查询用户信息 -->
+ <select id="find" resultType="User">
+      SELECT t.*,d.b_no,d.d_no FROM (select * from t_user where 1=1
+   
+     <if test="u_no != null and u_no !=''">
+        and  u_no=#{u_no}
+     </if>
+     <if test="u_name != null and u_name !='' ">
+        and  u_name=#{u_name}
+     </if>
+     <if test="u_gra != null and u_gra!='' ">
+        and  u_gra=#{u_gra}
+     </if>
+      <if test="b_no != null and b_no!='' ">
+        and  b_no=#{b_no}
+      </if>
+      ) as t
+      LEFT JOIN t_dor_bed d   ON  d.u_no = t.u_no
+      limit #{pag},#{limt}
+ </select> 
+ 
+   <!-- 条件查询用户信息条数 -->
+ <select id="findtol" resultType="int">
+      SELECT count(1) FROM (select * from t_user where 1=1
+   
+     <if test="u_no != null and u_no !=''">
+        and  u_no=#{u_no}
+     </if>
+     <if test="u_name != null and u_name !='' ">
+        and  u_name=#{u_name}
+     </if>
+     <if test="u_gra != null and u_gra!='' ">
+        and  u_gra=#{u_gra}
+     </if>
+      <if test="b_no != null and b_no!='' ">
+        and  b_no=#{b_no}
+      </if>
+      ) as t
+      LEFT JOIN t_dor_bed d   ON  d.u_no = t.u_no
+
+ </select> 
+ 
+ <!-- 重置密码 -->
+ <update id="updapass">
+  update t_user set u_pass=#{u_pass} where u_id=#{u_id}
+ </update>
+ 
+ <!-- 删除 -->
+ <update id="delete">
+  delete from t_user where u_id=#{u_id}
+ </update>
+ 
+ <!-- 登录 -->
+ <select id="login" parameterType="String" resultType="User">
+ SELECT t.*,d.b_no,d.d_no FROM t_dor_bed d,t_user t  WHERE d.u_no = t.u_no and t.u_no=#{u_no} and t.u_pass=#{u_pass}
+  </select>
+  
+   <!-- 根据学号查询 -->
+ <select id="findbyno" parameterType="String" resultType="User">
+       SELECT t.*,d.b_no,d.d_no FROM t_dor_bed d,t_user t  WHERE d.u_no = t.u_no and t.u_no=#{u_no} 
+  </select>
+  
+  <!-- 添加 -->
+   <insert id="add" parameterType="User" >
+      insert into t_user(u_no,u_pass,u_name,u_coll,u_gra,u_class,u_sub,u_phone,u_sex) 
+      values(#{u_no},#{u_pass},#{u_name},#{u_coll},#{u_gra},#{u_class},#{u_sub},#{u_phone},#{u_sex})
+  </insert>
+
+  <!-- 修改 -->
+   <update id="update" parameterType="User" >
+      update t_user set u_name=#{u_name},u_phone=#{u_phone} where u_id=#{u_id}
+  </update>
+  
+
+  
+ </mapper>

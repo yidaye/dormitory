@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.PubinfoDao">
+ 
+
+   <!-- 查询所有公告信息 -->
+ <select id="findAll"  resultType="Pubinfo">
+ select * from t_pub_info where a_no="admin"
+ </select> 
+ 
+    <!-- 查询所有公告信息 -->
+ <select id="findmAll"  resultType="Pubinfo">
+SELECT i.*,m.b_no FROM t_pub_info i,t_manager m WHERE i.a_no=m.m_no and m.b_no=#{b_no}
+ </select>
+ 
+   <!-- 根据条件查询 -->
+ <select id="findm"  resultType="Pubinfo">
+ select * from t_pub_info where  a_no=#{a_no}
+   <if test="date != null and date!='' ">
+        and  date=#{date}
+     </if>
+ 
+ limit #{pag},#{limt}
+ </select> 
+ 
+   <!-- 根据条件查询条数 -->
+ <select id="findmtol"  resultType="int">
+ select count(1) from t_pub_info where a_no=#{a_no}
+   <if test="date != null and date!='' ">
+        and  date=#{date}
+     </if>
+ 
+ </select>
+ 
+ 
+  <!-- 根据条件查询 -->
+ <select id="find"  resultType="Pubinfo">
+ select * from t_pub_info where 1=1 and a_no='admin'
+   <if test="date != null and date!='' ">
+        and  date=#{date}
+     </if>
+ 
+ limit #{pag},#{limt}
+ </select> 
+ 
+   <!-- 根据条件查询条数 -->
+ <select id="findtol"  resultType="int">
+ select count(1) from t_pub_info where 1=1 and a_no='admin'
+   <if test="date != null and date!='' ">
+        and  date=#{date}
+     </if>
+ 
+ </select>
+ 
+<!-- 添加公告信息 -->
+ <insert id="add"  parameterType="Pubinfo">
+   insert into t_pub_info (date,content,a_no) values(#{date},#{content},#{a_no})
+ </insert> 
+  
+  <!-- 修改公告信息 -->
+ <update id="update"  parameterType="Pubinfo">
+     update t_pub_info set content=#{content} where id=#{id} 
+ </update> 
+  
+    <!-- 删除公告信息 -->
+ <update id="delete"  parameterType="int">
+     delete from t_pub_info where id=#{id} 
+ </update> 
+  
+  
+ </mapper>

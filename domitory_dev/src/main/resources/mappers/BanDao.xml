@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.BanDao">
+ 
+  <!-- 条件查询-->
+ <select id="findAll"  resultType="Ban">
+
+ select *,(SELECT COUNT(1) FROM t_dor_bed WHERE t_dor_bed.b_no=t_ban.b_no AND u_no IS NOT NULL AND u_no !='') AS b_relpepo 
+     
+     from t_ban  where 1=1
+   
+     <if test="b_no != null and b_no !=''">
+        and  b_no=#{b_no}
+     </if>
+     <if test="b_sex != null and b_sex!='' ">
+        and  b_sex=#{b_sex}
+     </if>
+ 
+ limit #{pag},#{limt}
+       
+ </select> 
+ 
+   <!-- 查询所有-->
+ <select id="find"  resultType="Ban">
+ select *,(SELECT COUNT(1) FROM t_dor_bed WHERE t_dor_bed.b_no=t_ban.b_no AND u_no IS NOT NULL AND u_no !='') AS b_relpepo 
+     
+     from t_ban  where 1=1
+ 
+<if test="b_no != null and b_no !=''">
+        and  b_no=#{b_no}
+     </if>
+     
+ </select> 
+ 
+ 
+ 
+ <!-- 查询所有数量-->
+ <select id="findtol"  resultType="int">
+ select count(1) from t_ban  where 1=1
+   
+     <if test="b_no != null and b_no !=''">
+        and  b_no=#{b_no}
+     </if>
+     <if test="b_sex != null and b_sex!='' ">
+        and  b_sex=#{b_sex}
+     </if>
+ </select> 
+ 
+ 
+ 
+<!-- 添加-->
+ <insert id="add"  parameterType="Ban">
+   insert into t_ban (b_no,b_sex,b_pepole,b_hight_dor,d_pepole,b_hight,b_remark,b_money) 
+              values (#{b_no},#{b_sex},#{b_pepole},#{b_hight_dor},#{d_pepole},#{b_hight},#{b_remark},#{b_money})
+ </insert> 
+  
+   <!-- 查询楼栋入住人数 -->
+ <select id="findrelpepo"  resultType="int">
+ SELECT COUNT(1) FROM t_dor_bed WHERE b_no=#{b_no} AND u_no IS NOT NULL
+ </select> 
+ 
+ 
+  <!-- 修改 -->
+ <update id="update"  parameterType="Ban">
+     update t_ban set b_remark=#{b_remark},b_money=#{b_money} 
+     where b_id=#{b_id} 
+ </update> 
+  
+    <!-- 删除 -->
+ <update id="delete"  parameterType="Ban">
+     delete from t_ban where b_id=#{b_id} 
+ </update> 
+  
+  <select id="findpepo" resultType="int">
+  SELECT IFNULL(SUM(b_pepole),0)  FROM t_ban  WHERE b_sex=#{b_sex}
+  </select>
+  
+ </mapper>

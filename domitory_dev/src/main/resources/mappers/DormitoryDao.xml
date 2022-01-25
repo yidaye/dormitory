@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.DormitoryDao">
+ 
+
+ 
+  <!-- 查询所有信息 -->
+ <select id="findAll"  resultType="Dormitory">
+ select *,(SELECT COUNT(1) FROM t_dor_bed  WHERE t_dor_bed.b_no=t_dormitory.b_no 
+           AND t_dor_bed.d_no=t_dormitory.d_no AND t_dor_bed.u_no IS NOT NULL ) as d_relpepo
+  from t_dormitory where 1=1
+     <if test="b_no != null and b_no !=''">
+        and  b_no=#{b_no}
+     </if>
+     <if test="d_no != null and d_no!='' ">
+        and  d_no=#{d_no}
+     </if>
+ 
+ limit #{pag},#{limt}
+ </select> 
+ 
+   <!-- 查询数量 -->
+ <select id="findtol"  resultType="int">
+ select count(1) from t_dormitory where 1=1
+     <if test="b_no != null and b_no !=''">
+        and  b_no=#{b_no}
+     </if>
+     <if test="d_no != null and d_no!='' ">
+        and  d_no=#{d_no}
+     </if>
+ 
+ </select>
+ 
+  <!-- 根据楼栋号查询所有信息 -->
+ <select id="findbybno"  resultType="Dormitory">
+ select * from t_dormitory where b_no=#{b_no}
+ </select> 
+ 
+<!-- 添加 -->
+ <insert id="add"  parameterType="Dormitory">
+   insert into t_dormitory (b_no,d_no,d_pepole) values(#{b_no},#{d_no},#{d_pepole})
+ </insert> 
+  
+  <!-- 修改 -->
+ <update id="update"  parameterType="Dormitory">
+     update t_dormitory set d_remark=#{d_remark} where d_id=#{d_id} 
+ </update> 
+  
+    <!-- 删除 -->
+ <update id="delete"  >
+     delete from t_dormitory where b_no=#{b_no}
+ </update> 
+  
+  
+ </mapper>

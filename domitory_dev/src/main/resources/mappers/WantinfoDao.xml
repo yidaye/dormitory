@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.WantinfoDao">
+ 
+  <!-- 查询所有缺勤信息 -->
+ <select id="findAll"  resultType="Wantinfo">
+ select * from t_want_info
+ </select> 
+ 
+ <!-- 根据宿管查询 -->
+ <select id="findbymno"  resultType="Wantinfo">
+ select * from t_want_info where m_no=#{m_no}
+ </select> 
+ 
+ <!--根据用户查询 -->
+ <select id="findbyuno"  resultType="Wantinfo">
+SELECT * FROM (SELECT id,remark,m_no,u_no,CONCAT(SUBSTR(date,1,4),SUBSTR(date,6,2),SUBSTR(date,9,2)) AS date  FROM t_want_info) AS te
+ 
+  where u_no=#{u_no}  and date>=#{enddate} and date <![CDATA[ <= ]]> #{startdate}
+ </select> 
+ 
+ 
+ 
+<!-- 添加缺勤信息 -->
+ <insert id="add"  parameterType="Wantinfo">
+   insert into t_want_info (date,remark,m_no,u_no) values(#{date},#{remark},#{m_no},#{u_no})
+ </insert> 
+  
+      <!-- 修改缺勤信息 -->
+ <update id="update"  parameterType="Wantinfo">
+     update t_want_info set remark=#{remark},u_no=#{u_no} where id=#{id}
+ </update> 
+  
+    <!-- 删除缺勤信息 -->
+ <update id="delete"  parameterType="int">
+     delete from t_want_info where id=#{id} 
+ </update> 
+  
+ <!-- 查询条数 -->
+ <select id="findtol" resultType="int">
+ select count(1) from t_want_info where m_no=#{m_no}
+   
+    <if test="u_no != null and u_no !=''">
+        and  u_no=#{u_no}
+     </if>
+     <if test="date != null and date !='' ">
+        and  date=#{date}
+     </if>
+ 
+ </select> 
+  
+  <!-- 根据条件查询 -->
+  <select id="find" resultType="Wantinfo">
+  SELECT i.*,u.u_name,u.u_phone FROM t_want_info i,t_user u WHERE i.u_no=u.u_no and m_no=#{m_no}
+   
+    <if test="u_no != null and u_no !=''">
+        and  i.u_no=#{u_no}
+     </if>
+     <if test="date != null and date !='' ">
+        and  date=#{date}
+     </if>
+     
+      limit #{pag},#{limt}
+   
+  </select>
+ </mapper>

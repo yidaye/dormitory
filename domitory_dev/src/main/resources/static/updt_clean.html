@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>团购活动列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/index.css">
+       <link rel="stylesheet" href="./yi/layui/css/layui.css"  media="all">
+        <script src="./yi/js/jquery-1.11.3.min.js"></script>
+    <script src="./yi/layer/layer.js"></script>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/index.js"></script>
+</head>
+  <body>
+     <form class="layui-form layui-form-pane" >
+     
+       <div class="layui-form-item" style="display:none">
+    <label class="layui-form-label">id：</label>
+    <div class="layui-input-block">
+      <input type="text" name="title" autocomplete="off" placeholder="请输入" class="layui-input" id="d_id">
+    </div>
+  </div>
+     
+  <div class="layui-form-item">
+    <label class="layui-form-label">宿舍号：</label>
+    <div class="layui-input-block">
+      <input type="text" name="title" autocomplete="off" placeholder="请输入" class="layui-input" id="d_no" disabled>
+    </div>
+  </div>
+  
+    <div class="layui-form-item">
+    <label class="layui-form-label">卫生情况：</label>
+    <div class="layui-input-block">
+      <select name="interest" id="sisuation">
+        <option value=""></option>
+        <option value="1">优秀</option>
+        <option value="2">合格</option>
+        <option value="3">不合格</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="layui-form-item layui-form-text">
+  <label class="layui-form-label">备注：</label>
+  <div class="layui-input-block">
+  <textarea id="remark" placeholder="请输入内容" class="layui-textarea"></textarea>
+  </div>
+  </div>
+  
+  <div class="layui-btn-container" style="text-align: center;">
+  <button type="button" class="layui-btn" onclick="updt()">确认修改</button>
+  <button type="reset" class="layui-btn layui-btn-normal" onclick="res()" >取消</button>
+  </div>
+  </form>
+  </body>
+  
+    <script type="text/javascript">
+    
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var form = layui.form;
+        form.render();
+      
+      
+    });
+    
+    function test(){ layui.form.render();}
+</script>
+
+<script type="text/javascript">
+
+   function updt()
+   {
+   var sisuation
+   var id= $("#d_id").val();  
+   var d_no=$("#d_no").val();  
+   var sisu=$("#sisuation").val(); 
+   var remark=$("#remark").val();  
+   if(sisu == 1) sisuation='优秀'
+   else if(sisu == 2) sisuation='合格'
+   else if(sisu == 3) sisuation='不合格'
+    $.ajax({
+	       url:"dorclean/update",
+	       //type:"post",
+	       data:{id:id,remark:remark,sisuation:sisuation},
+	       contentType:"application/json;charset=utf-8",
+	       dataType:"json",
+	       success:function(data)
+	       {
+	       var index=parent.layer.getFrameIndex(window.name);
+           parent.layer.close(index);
+           parent.layui.table.reload('testReload', {
+           page: {
+            curr: 1 //重新从第 1 页开始
+                 }
+        
+              });
+              }
+              })
+   
+   } 
+   function res()
+   {
+           var index=parent.layer.getFrameIndex(window.name);
+           parent.layer.close(index);
+   }
+</script>
+</html>

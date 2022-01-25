@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.DorrepairDao">
+ 
+   <!-- 查询所有 -->
+   <select id="findAll" resultType="Dorrepair">
+    select * from t_dor_repair where b_no=#{b_no} and state='未解决'
+   </select>
+
+<!-- 查询当日维修情况 -->
+<select id="findtoday" resultType="int">
+
+select count(1) from t_dor_repair where b_no=#{b_no} and state=#{state} and date=#{date} 
+</select>
+ 
+ 
+  <!-- 添加 -->
+ <insert id="add"  parameterType="Dorrepair">
+ INSERT INTO t_dor_repair(d_no,b_no,u_no,date,remark,state,TYPE,imgurl) 
+                   VALUES(#{d_no},#{b_no},#{u_no},#{date},#{remark},#{state},#{type},#{imgurl})
+ </insert> 
+ 
+   <!-- 根据用户名查询 -->
+   <select id="findbyuno" resultType="Dorrepair">
+    select * from t_dor_repair where u_no=#{u_no}
+   </select>
+   
+   <!-- 根据id查询 -->
+   <select id="findbyid" resultType="Dorrepair">
+    select * from t_dor_repair where id=#{id}
+   </select>
+   
+   <!-- 删除 -->
+ <update id="delete"  parameterType="Dorrepair">
+ delete from t_dor_repair where id=#{id}
+ </update> 
+ 
+ <!-- 修改 -->
+ <update id="update"  parameterType="Dorrepair">
+ update t_dor_repair set remark=#{remark},type=#{type},imgurl=#{imgurl}
+ where   id=#{id}
+ </update> 
+
+  <!-- 根据条件查 -->
+  <select id="find" resultType="Dorrepair">
+    select * from t_dor_repair where b_no=#{b_no}
+    
+    <if test="d_no != null and d_no !=''">
+        and  d_no=#{d_no}
+     </if>
+     <if test="date != null and date !='' ">
+        and  date=#{date}
+     </if>
+     <if test="state != null and state!='' ">
+        and  state=#{state}
+     </if>
+     
+      limit #{pag},#{limt}
+    
+  </select>
+  
+    <!-- 根据条件查条数 -->
+  <select id="findtol" resultType="int">
+    select count(1) from t_dor_repair where b_no=#{b_no}
+    
+    <if test="d_no != null and d_no !=''">
+        and  d_no=#{d_no}
+     </if>
+     <if test="date != null and date !='' ">
+        and  date=#{date}
+     </if>
+     <if test="state != null and state!='' ">
+        and  state=#{state}
+     </if>
+     
+    
+  </select>
+  
+  <!-- 修改状态 -->
+  <update id="updastate">
+  update t_dor_repair set state=#{state}
+  where   id=#{id} 
+  </update>
+ </mapper>

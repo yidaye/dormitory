@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.yidaye.domitory.dao.BannerDao">
+ 
+ <insert id="add" parameterType="Banner">
+ insert into t_banner(b_no,m_no,imgurl,date) values(#{b_no},#{m_no},#{imgurl},#{date})
+ </insert>
+ 
+ <delete id="delete">
+ delete from t_banner where id=#{id}
+ </delete>
+ 
+ <select id="find" resultType="Banner">
+ select * from t_banner where b_no=#{b_no}
+ </select>
+ 
+  <select id="findAll" resultType="Banner">
+ select b.*,m.m_name from t_banner b,t_manager m where b.b_no=#{b_no} and b.m_no=m.m_no 
+ 
+ <if test="date != null and date !=''">
+ and date=#{date}
+ </if>
+ limit  #{pag},#{limt}
+ </select>
+ 
+   <select id="findAlltol" resultType="int">
+ select count(1) from t_banner b,t_manager m where b.b_no=#{b_no} and b.m_no=m.m_no 
+ 
+ <if test="date != null and date !=''">
+ and date=#{date}
+ </if>
+ </select>
+ 
+ </mapper>
